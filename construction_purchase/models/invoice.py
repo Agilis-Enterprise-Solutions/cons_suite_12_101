@@ -29,7 +29,7 @@ class AccountInvoiceLine(models.Model):
     project_boq_category = fields.Selection([
                                         ('meterial', 'Material'),
                                         ('subcon', 'Subcontractor'),
-                                        # ('labor', 'Human Resource/Labor'),
+                                        ('labor', 'Human Resource/Labor'),
                                         ('equipment', 'Equipment'),
                                         ('overhead', 'Overheads')], string="Category")
     recorded_analytic = fields.Boolean()
@@ -38,7 +38,7 @@ class AccountInvoiceLine(models.Model):
     # def _check_data(self):
     #     for i in self:
     #         if not i.task_id and not i.project_boq_category in [False, 'overhead']:
-    #             raise ValidationError(_('Please select related Task to those lines where "Category" in not equal to "Overheads" or Epmty')) 
+    #             raise ValidationError(_('Please select related Task to those lines where "Category" in not equal to "Overheads" or Epmty'))
 
 class AccountMoveLine(models.Model):
     _inherit = "account.move.line"

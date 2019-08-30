@@ -58,15 +58,9 @@
           <field name="actual_accomplishment"/>
           <field name="company_currency_id"/>
         </field>
-        <div class="o_primary" position="after">
-          <t>
-            <div class="center-block">
-              <field name="actual_accomplishment" widget="percentpie"/>
-            </div>
-          </t>
-        </div>
         <div class="o_kanban_primary_left" position="after">
-          <div class="center-block">
+          <div class="o_kanban_primary_left">
+
             <table class="table table-hover">
               <tr>
                 <td>
@@ -80,6 +74,14 @@
                   <div>
                     <span class="o_value"><field name="project_budget_allocated"/></span>
                     <span class="o_label"><string>Budget Allocated</string></span>
+                  </div>
+                </td>
+                <td rowspan="3"/>
+                <td rowspan="3"/>
+                <td rowspan="3">
+                  <div>
+                    <span class="o_value"><field name="actual_accomplishment" widget="percentpie"/></span>
+                    <!-- <span class="o_label"><string>Budget Allocated</string></span> -->
                   </div>
                 </td>
               </tr>
