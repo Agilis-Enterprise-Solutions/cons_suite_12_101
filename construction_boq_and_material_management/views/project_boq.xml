@@ -9,7 +9,7 @@
             <field name="prefix">BOQ</field>
             <field name="company_id" eval="False" />
         </record>
-        
+
         <!-- Bill of Material Tree View -->
 		<record id="project_boq_view_tree" model="ir.ui.view">
 			<field name="name">project.boq.tree</field>
@@ -26,7 +26,7 @@
 				</tree>
 			</field>
 		</record>
-		
+
 		<!-- Bill of Material Form View -->
 		<record id="project_boq_view_form" model="ir.ui.view">
 			<field name="name">project.boq.form</field>
@@ -40,10 +40,10 @@
 				        <button name="boq_action_approve" string="Approve" class="oe_highlight" states="verified" type="object"/>
 				        <button name ="boq_action_cancel" states="draft,confirmed,verified,approved" string="Cancel"  type="object"/>
 				        <button name="boq_action_draft" states="cancelled" type="object" string="Set to BOQ"/>
-				        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,verified,approved" 
+				        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,verified,approved"
 				           	statusbar_colors="{'KEY_IS_STATE':'VALUE_IS_COLOR'}"/>
 				    </header>
-					<sheet>		
+					<sheet>
 						<div class="oe_button_box" name="button_box">
 	                        <button name="action_view_change_order"
 	                            type="object"
@@ -52,7 +52,7 @@
 	                            attrs="{'invisible': [('change_order_count', '=', 0)]}">
 	                            <field name="change_order_count" widget="statinfo" string="Change Order"/>
 	                        </button>
-	                    </div>				
+	                    </div>
 						<div class="oe_title">
 							<h1>
 				            	<field name="name"/>
@@ -67,18 +67,18 @@
 				            	<field name="qty"/>
 				            	<field name="uom_id"/>
 				            </group>
-				            
+
 				            <group class="oe_subtotal_footer" name="boq_total" style="margin-right:170px;">
-                                <field name="labor_total"/>
-                                <field name="equipment_total"/>
-                                <field name="scservice_total"/>
+                      <field name="labor_total" invisible="1"/>
+                      <field name="equipment_total"/>
+                      <field name="scservice_total"/>
 				            	<field name="material_total"/>
 				            	<field name="overheadothers_total"/>
-                                <div class="oe_subtotal_footer_separator oe_inline o_td_label">
-                                    <label for="total_boq" />
-                                </div>
-                                <field name="total_boq" nolabel="1" class="oe_subtotal_footer_separator"/>
-                            </group>
+                      <div class="oe_subtotal_footer_separator oe_inline o_td_label">
+                          <label for="total_boq" />
+                      </div>
+                      <field name="total_boq" nolabel="1" class="oe_subtotal_footer_separator"/>
+                  </group>
 			            </group>
 			            <notebook>
 			            	<page string="Materials">
@@ -122,8 +122,8 @@
 			            			</field>
 			            		</group>
 			            	</page>
-			            	<page string="Labor and Other Overheads">
-			            		<group string ="Labor">
+			            	<page string="Overheads">
+			            		<group string ="Labor" invisible="1">
 				            		<field name="boq_labor_ids" nolabel="1" widget="one2many_list" mode="tree,kanban" attrs="{'readonly': [('state', '!=', ('draft'))]}">
 					            		<tree string="Labor" editable="bottom">
 					            			<field name="job_id" required="1"/>
@@ -180,7 +180,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<!-- BOQ Overhead Category Tree View-->
 		<record id="boq_overhead_category_view_tree" model="ir.ui.view">
 			<field name="name">boq.overhead.category.tree</field>
@@ -191,7 +191,7 @@
 				</tree>
 			</field>
 		</record>
-		
+
 		<!-- BOQ Overhead Category Form View-->
 		<record id="boq_overhead_category_view_form" model="ir.ui.view">
 			<field name="name">boq.overhead.category.form</field>
@@ -204,7 +204,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<!-- BOQ Overhead Category Action-->
 		<record id="open_view_boq_overhead_categ" model="ir.actions.act_window">
 	        <field name="name">BOQ Overhead Category</field>
@@ -212,7 +212,7 @@
 	        <field name="view_type">form</field>
 	        <field name="view_mode">tree,form</field>
     	</record>
-    	
+
 		<!-- -Bill of Material Action-->
 		<record id="open_view_project_base_boq" model="ir.actions.act_window">
 	        <field name="name">Bill of Material</field>
@@ -220,7 +220,7 @@
 	        <field name="view_type">form</field>
 	        <field name="view_mode">tree,form</field>
     	</record>
-    	
+
     	<record id="open_view_project_boq_link" model="ir.actions.act_window">
 	        <field name="name">BOQ</field>
 	        <field name="res_model">project.boq</field>
@@ -228,14 +228,14 @@
 	        <field name="view_mode">tree,form</field>
 	        <field name="domain">[('project_id','=', active_id)]</field>
     	</record>
-    	
-    	
+
+
   		<!--Bill of Material Menu Item-->
-    	<menuitem id="menu_projects_project_boq" action="open_view_project_base_boq" 
+    	<menuitem id="menu_projects_project_boq" action="open_view_project_base_boq"
     		name="Bill of Material" parent="project.menu_projects" sequence="4"/>
-    		
+
     		<!-- BOQ Overhead Category Menu Item-->
-    	<menuitem id="menu_projects_boq_overhead_categ" action="open_view_boq_overhead_categ" 
+    	<menuitem id="menu_projects_boq_overhead_categ" action="open_view_boq_overhead_categ"
     		name="BOQ Overhead Category" parent="project.menu_projects" sequence="6"/>
 	</data>
 </odoo>

@@ -92,12 +92,12 @@ class ProjectProgressBilling(models.Model):
     project_id = fields.Many2one('project.project', string="Project", readonly=True, states={'draft': [('readonly', False)]})
     name = fields.Char(string="Reference", default='/')
     note = fields.Text(string="Notes")
-    billing_cycle_id = fields.Many2one('project.projection.accomplishment', string="Billing Cycle")
+    billing_cycle_id = fields.Many2one('project.projection.accomplishment', string="Billing Cycle", readonly=True, states={'draft': [('readonly', False)]}, copy=False)
     cycle_date = fields.Date(string="Billing Cycle Date", required=True, readonly=True, states={'draft': [('readonly', False)]})
     date_run = fields.Date(string="Date Run", readonly=True)
     user_id = fields.Many2one('res.users', srtring="Run By", readonly=True)
     retention_ratio = fields.Float(string="Retention", compute='_compute_billing_details', store=True)
-    billing_accomplishment_ids = fields.One2many('project.accomplishment.billing', 'billing_id', string="Actual Accomplishiment of the Month")
+    billing_accomplishment_ids = fields.One2many('project.accomplishment.billing', 'billing_id', string="Actual Accomplishiment of the Month", readonly=True, states={'draft': [('readonly', False)]})
     billing_history_ids = fields.Many2many('project.progress.billing', 'project_billing_rel', 'billing_id', 'history_id', string="Billing History", store=True, compute='_compute_billing_details')
     total_accomplishment = fields.Float(string="Total Accomplishment", store=True, compute='_get_total_accomplishment')
     current_billable = fields.Monetary(string="Billable", store=True, compute='_compute_billing_details')
@@ -140,6 +140,13 @@ class ProjectProgressBilling(models.Model):
     canceled_by = fields.Many2one('res.users', string="Canceled By", readonly=True)
     doc_count = fields.Integer(compute='_compute_attached_docs_count', string="Number of documents attached")
 
+    @api.onchange('project_id')
+    def _onchange_project_id(self):
+        if self.project_id:
+            if not self.project_id.partner_id: raise ValidationError(_("Please assign a Customer first to the Project"))
+            accomplishment = self.env['project.projection.accomplishment'].search([('project_id', '=', self.project_id.id)])
+            return {'domain': {'billing_cycle_id': [('id', 'in', accomplishment.ids)]}}
+
     @api.multi
     def compute_phase_accomplishment(self):
         for i in self:
@@ -147,7 +154,7 @@ class ProjectProgressBilling(models.Model):
             for line in i.billing_accomplishment_ids:
                 line.unlink()
             for phase in i.project_id.phase_ids:
-                previous_accomplishement = self.env['project.accomplishment.billing'].search([('cycle_date', '<=', i.cycle_date), ('phase_id', '=', phase.id), ('billing_state', 'not in', ['draft'])], order="cycle_date desc", limit=1)
+                previous_accomplishement = self.env['project.accomplishment.billing'].search([('cycle_date', '<=', i.cycle_date), ('phase_id', '=', phase.id), ('billing_state', 'not in', ['draft'])])#, order="cycle_date desc", limit=1)
                 total_task_weight = sum(rec.task_weight for rec in phase.task_ids)
                 phase_accomplishment = 0.0
                 for task in phase.task_ids:
@@ -155,7 +162,7 @@ class ProjectProgressBilling(models.Model):
                     accomplishment = inspection.search([('date', '<=', i.cycle_date), ('task_id', '=', task.id)], order="date desc",limit=1)
                     if accomplishment[:1]:
                         phase_accomplishment += (task.task_weight / total_task_weight) * accomplishment.actual_accomplishment
-                billable_accomplishment = (phase_accomplishment - previous_accomplishement.accomplishment)
+                billable_accomplishment = (phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
                 if billable_accomplishment > 0.0:
                     billable.append([0, 0, {
                         'phase_id': phase.id,

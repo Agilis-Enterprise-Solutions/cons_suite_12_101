@@ -20,27 +20,27 @@ class ProjectVisualInspection(models.Model):
                                          required=True)
     task_id = fields.Many2one('project.task', 'Task')
 
-    @api.multi
-    @api.onchange('date', 'task_id')
-    def _check_unique_date(self):
-        if not self.date:
-            return
-        rest_of_vals = self.task_id.visual_inspection - self
-        for record in rest_of_vals:
-            previous_date = datetime.strptime(record.date, '%Y-%m-%d')
-            current_date = datetime.strptime(self.date, '%Y-%m-%d')
-            p_date = self.trunc_datetime((previous_date))
-            c_date = self.trunc_datetime((current_date))
-            if p_date == c_date and record.task_id.id == self.task_id.id:
-                return {
-                     'warning': {'title': 'Error!', 'message': 'Actual Accomplishment should not be more than one time for same period.'},
-                     'value': {
-                                 'date': None,
-                            }
-                }
-
-    def trunc_datetime(self, date):
-        return date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    # @api.multi
+    # @api.onchange('date', 'task_id')
+    # def _check_unique_date(self):
+    #     if not self.date:
+    #         return
+    #     rest_of_vals = self.task_id.visual_inspection - self
+    #     for record in rest_of_vals:
+    #         previous_date = record.date
+    #         current_date = record.date
+    #         p_date = self.trunc_datetime((previous_date))
+    #         c_date = self.trunc_datetime((current_date))
+    #         if p_date == c_date and record.task_id.id == self.task_id.id:
+    #             return {
+    #                  'warning': {'title': 'Error!', 'message': 'Actual Accomplishment should not be more than one time for same period.'},
+    #                  'value': {
+    #                              'date': None,
+    #                         }
+    #             }
+    #
+    # def trunc_datetime(self, date):
+    #     return date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
     @api.multi
     def document_attach(self):
@@ -84,24 +84,28 @@ class ProjectTask(models.Model):
 
     @api.depends('visual_inspection.actual_accomplishment')
     def update_actual_accomplishment(self):
-        actual_accomplishment = 0
-        maxdate = '0000-00-00'
         for ids in self:
-            #===================================================================
-            # if ids.visual_inspection:
-            #     visual_size = len(ids.visual_inspection) - 1
-            #===================================================================
-            vals = []
-            for visual in ids.visual_inspection:
-                maxdate = max(visual.date, maxdate)
-                vals.append({'date': visual.date,
-                             'id': visual.id,
-                             'value': visual.actual_accomplishment})
-                actual_accomplishment += visual.actual_accomplishment
-            for val in vals:
-                if val.get('date') == maxdate:
-                    ids.update({'actual_accomplishment': val.get('value')
-                                })
+            accomplishment = ids.env['project.visual.inspection'].search([('task_id', '=', ids.id)], limit=1, order='date desc')
+            ids.update({'actual_accomplishment': accomplishment[:1] and accomplishment.actual_accomplishment or 0.0})
+
+        # actual_accomplishment = 0
+        # maxdate = '0000-00-00'
+        # for ids in self:
+        #     #===================================================================
+        #     # if ids.visual_inspection:
+        #     #     visual_size = len(ids.visual_inspection) - 1
+        #     #===================================================================
+        #     vals = []
+        #     for visual in ids.visual_inspection:
+        #         maxdate = max(visual.date, maxdate)
+        #         vals.append({'date': visual.date,
+        #                      'id': visual.id,
+        #                      'value': visual.actual_accomplishment})
+        #         actual_accomplishment += visual.actual_accomplishment
+        #     for val in vals:
+        #         if val.get('date') == maxdate:
+        #             ids.update({'actual_accomplishment': val.get('value')
+        #                         })
 
 
 class DocumentsAttach(models.Model):

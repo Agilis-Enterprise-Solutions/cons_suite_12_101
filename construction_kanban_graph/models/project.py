@@ -28,10 +28,10 @@ class Project(models.Model):
                  {"value": self.service_expense, "labels":["2.Subcontract...","Actual Expense"]},
                  {"value": self.labor_budget, "labels":["3.Labor","Budget"]},
                  {"value": self.labor_expense, "labels":["3.Labor","Actual Expense"]},
-                 {"value": self.equipment_budget, "labels":["4.Equipm...","Budget"]},
-                 {"value": self.equipment_expense, "labels":["4.Equipm...","Actual Expense"]},
-                 {"value": self.overhead_budget, "labels":["5.Overhea...","Budget"]},
-                 {"value": self.overhead_expense, "labels":["5.Overhea...","Actual Expense"]}]
+                 {"value": self.equipment_budget, "labels":["4.Equipment","Budget"]},
+                 {"value": self.equipment_expense, "labels":["4.Equipments","Actual Expense"]},
+                 {"value": self.overhead_budget, "labels":["5.Overheads","Budget"]},
+                 {"value": self.overhead_expense, "labels":["5.Overheads","Actual Expense"]}]
         return [{'values': datas, 'id': self.id}]
 
     @api.multi
