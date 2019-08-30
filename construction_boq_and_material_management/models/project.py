@@ -7,13 +7,6 @@ class Project(models.Model):
     _inherit = "project.project"
     _description = "Project Inherited"
 
-    @api.one
-    def _kanban_dashboard_graph(self):
-        self.kanban_dashboard_graph = json.dumps(self.get_bar_graph_datas())
-
-    @api.one
-    def _kanban_dashboard_line_graph(self):
-        self.kanban_dashboard_line_graph = json.dumps(self.get_line_graph_datas())
 
     # START Added SKIT
     boq_count = fields.Integer(compute='_compute_boq_count', string="BOQ")
