@@ -11,7 +11,7 @@ class ProjectProjectionAccomplishment(models.Model):
     _rec_name = 'date'
     _order = 'date'
 
-    project_id = fields.Many2one('project.project', string="Project")
+    project_id = fields.Many2one('project.project', string="Project", ondelete='cascade')
     date = fields.Date(string="Date")
     projected = fields.Float(string="Projected Percentage")
     actual = fields.Float(string="Actual Percentage")
@@ -40,8 +40,12 @@ class Project(models.Model):
     stock_location_id = fields.Many2one('stock.location', string="Project Inventory Location")
     boq_setting = fields.Selection([('1', 'Project + Phase + Task + BOQ'),
                                     ('2', 'Project + Phase + Task + BOQ')], string="Project Setting", default="1")
+    survey_frequent = fields.Selection([('week', 'Week'),
+                                         ('month', 'Month'),
+                                          # ('quarter', 'Quarter')
+                                          ], string="Review Cycle", default="month", readonly=True, states={'draft': [('readonly', False)]})
     projection_accomplishment_ids = fields.One2many('project.projection.accomplishment', 'project_id', string="Projection Accomplishment Timeline", readonly=True, states={'draft': [('readonly', False)]})
-    projection_set = fields.Boolean()
+    projection_set = fields.Boolean(store=True, compute="_get_projection_status")
     # Budget And Actual Expeditures
     #Todo: Make all this field a "Computed fields" Badget: based on the BOQs; Expense: Based on the actual expense recored in the Analytic Account
     material_budget = fields.Float(string="Material Budget")
@@ -56,13 +60,20 @@ class Project(models.Model):
     overhead_expense = fields.Float(string="Overhead Expense")
     total_budget = fields.Float(string="Total Budget")
     total_expense = fields.Float(string="Total Expense")
-
     #Porfolio
     parent_id = fields.Many2one("project.project", string="Portfolio", domain="[('project_type', 'in', ['porfolio'])]")
     project_count = fields.Integer(string="Projects", compute="_compute_project_count")
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account", copy=False, ondelete='set null',
         help="Link this project to an analytic account if you need financial management on projects. "
              "It enables you to connect projects with budgets, planning, cost and revenue analysis, timesheets on projects, etc.")
+
+    @api.depends('projection_accomplishment_ids')
+    def _get_projection_status(self):
+        for i in self:
+            for line in i.projection_accomplishment_ids:
+                i.projection_set = True
+                continue
+            else: i.projection_set = False
 
     @api.model
     def name_create(self, name):
@@ -124,8 +135,6 @@ class Project(models.Model):
 
     @api.onchange('parent_id', 'name')
     def _onchange_portfolio(self):
-        # data = self.search([('project_type', 'in', ['porfolio'])])
-        # raise ValidationError(_('Data: %s'%(str(data))))
         for i in self:
             if i.parent_id:
                 i.user_id = i.parent_id.user_id.id
@@ -165,6 +174,7 @@ class Project(models.Model):
         for i in self:
             if not i.stock_location_id or not i.start_date:
                 raise ValidationError(_('You must supply value on the fields:\n 1. Start Date\n 2. Project Inventory Location'))
+            if not i.projection_set: raise ValidationError(_('Please set project Timeline Projection'))
             i.write({'state': 'inprogress'})
         return True
 

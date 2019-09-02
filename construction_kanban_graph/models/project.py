@@ -21,7 +21,6 @@ class Project(models.Model):
 
     @api.multi
     def get_bar_graph_datas(self):
-
         datas = [{"value": self.material_budget, "labels":["1.Material","Budget"]},
                  {"value": self.material_expense, "labels":["1.Material","Actual Expense"]},
                  {"value": self.service_budget, "labels":["2.Subcontract...","Budget"]},
@@ -39,7 +38,11 @@ class Project(models.Model):
         datas = []
         for project in self.projection_accomplishment_ids:
             pdate = project.date
-            datas.append({"value": ((project.projected) / 100), "labels": [pdate.strftime("%b")+" "+pdate.strftime("%Y"),"Projected Accomplishment"]})
-            datas.append({"value": ((project.actual) / 100), "labels": [pdate.strftime("%b")+" "+pdate.strftime("%Y"),"Actual Accomplishment"]})
-
+            if not self.survey_frequent in ['week']:
+                datas.append({"value": ((project.projected) / 100), "labels": [pdate.strftime("%b")+" "+pdate.strftime("%Y"),"Projected Accomplishment"]})
+                datas.append({"value": ((project.actual) / 100), "labels": [pdate.strftime("%b")+" "+pdate.strftime("%Y"),"Actual Accomplishment"]})
+            else:
+                week = 'W%s - %s'%(pdate .strftime('%V'), pdate.strftime("%Y"))
+                datas.append({"value": ((project.projected) / 100), "labels": [week,"Projected Accomplishment"]})
+                datas.append({"value": ((project.actual) / 100), "labels": [week,"Actual Accomplishment"]})
         return [{'values': datas, 'id': self.id}]

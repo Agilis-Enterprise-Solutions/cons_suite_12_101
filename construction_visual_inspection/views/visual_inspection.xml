@@ -45,14 +45,14 @@
 								<field name="description"></field>
 								<field name="actual_accomplishment"></field>
 								<button name="document_attach" string="Attachments" type="object"
-									icon="fa fa-paperclip"/>
+									icon="fa-paperclip"/>
 							</tree>
 						</field>
 					</group>
 				</field>
 			</field>
 		</record>
-		
+
 		<!-- Created a new attachment form view to upload files under visual inspection -->
 		<record id="skit_attach_documents" model="ir.ui.view" >
 			<field name="name">attach.documents.form</field>
@@ -70,4 +70,3 @@
 		</record>
 	</data>
 </odoo>
-	

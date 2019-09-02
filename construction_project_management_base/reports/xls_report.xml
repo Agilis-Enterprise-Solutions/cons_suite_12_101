@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <report
+      id="project_accomplishment_xlsx"
+      model="project.project"
+      string="Accomplishment Timeline"
+      report_type="xlsx"
+      name="construction_project_management_base.pa"
+      file="construction_project_management_base.pa"
+      attachment_use="True"
+    />
+
+  </data>
+</odoo>
