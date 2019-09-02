@@ -205,14 +205,18 @@
               </group>
               <group name="accomplishment" string=".">
                 <div class="oe_button_box" colspan="2">
-                  <button name="%(set_projection_action_form)d" string="Set Projection Timeline" type="action" icon="fa-calendar-check"
-                    class="oe_highlight oe_link" attrs="{'invisible': [('projection_set', '=', True)]}" groups="project.group_project_manager"/>
+                  <label for="survey_frequent" string="Review Cycle :" class="oe_inline"/>
+                  <field name="survey_frequent" class="oe_inline"/>
+                  <button name="%(set_projection_action_form)d" string="Set Projection Timeline" type="action" icon="fa-calendar-check" context="{'default_survey_frequent': survey_frequent}"
+                    class="oe_link oe_inline" states="draft" groups="project.group_project_manager"/>
+                  <button name="%(set_projection_action_form)d" string="Extend Projection Timeline" type="action" icon="fa-calendar-check" context="{'default_survey_frequent': survey_frequent, 'default_extend_projection': True}"
+                    class="oe_link oe_inline" states="inprogress,halted" groups="project.group_project_manager"/>
                   <!-- <button name="lock_projection" class="oe_link" string="LOCK" type="action" icon="fa-expeditedssl" groups="project.group_project_manager"/> -->
                 </div>
                 <separator string="Projected and Actual Accomplishment" colspan="2"/>
                 <field name="projection_set" invisible="1"/>
                 <field name="projection_accomplishment_ids" nolabel="1" colspan="2" attrs="{'readonly': [('projection_set', '=', True)]}">
-                  <tree string="Projected and Actual Accomplishment" editable="top">
+                  <tree string="Projected and Actual Accomplishment" editable="top" create="false" delete="false">
                     <field name="date"/>
                     <field name="projected"/>
                     <field name="actual"/>

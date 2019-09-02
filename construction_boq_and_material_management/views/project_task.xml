@@ -23,11 +23,8 @@
 				<field name="tag_ids" position="after">
 					<field name="material_consumption_progress" widget="progressbar" />
 				</field>
-				<field name="uom_id" position="replace">
-					<div>
-						<field name="uom_id" class="oe_inline" placeholder="Unit of Measure"
-							attrs="{'required': [('qty', '!=', 0)]}" />
-					</div>
+				<field name="uom_id" position="attributes">
+					<attribute name="attrs">{'required': [('qty', '!=', 0)]}</attribute>
 				</field>
 				<field name="task_budget" position="after">
 					<field name="boq_id"/>

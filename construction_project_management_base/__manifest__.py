@@ -26,6 +26,7 @@
     'category': 'Project',
     'data': [
             'security/ir.model.access.csv',
+            # 'reports/xls_report.xml',
             'wizard/set_projection.xml',
             'views/project_task.xml',
             'views/project_phase.xml',

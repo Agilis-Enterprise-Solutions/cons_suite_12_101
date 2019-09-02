@@ -13,16 +13,32 @@ from odoo.exceptions import UserError, ValidationError
 class SetProjection(models.TransientModel):
     _name = 'set.projection'
 
-    survey_frequent = fields.Selection([('week', 'Week'), ('month', 'Month'), ('quarter', 'Quarter')], string="Frequent Status Review", default="month")
+    survey_frequent = fields.Selection([('week', 'Week'),
+                                         ('month', 'Month'),
+                                          # ('quarter', 'Quarter')
+                                          ], string="Frequent Status Review")
+    extend_projection = fields.Boolean()
     number_of_frequent = fields.Integer(string="Frequent Duration", default="1", help="Number of Weeks/Months/Quarters")
-    start_date = string = fields.Date(string="Start Date")
+    start_date = fields.Date(string="Start Date")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(SetProjection, self).default_get(fields)
+        data = self.env['project.projection.accomplishment'].search([('project_id', '=',self._context.get('active_id'))], order='date desc', limit=1)
+        res['start_date'] = data.date
+        return res
+
 
     @api.multi
     def set_projection(self):
         for i in self:
+            project = self.env['project.project'].browse(self._context.get('active_id'))
             start_date = i.start_date#datetime.strptime(i.start_date, DF)
             data_record = []
             if i.survey_frequent == 'week':
+                if not i.extend_projection:
+                    for line in project.projection_accomplishment_ids:
+                        line.unlink()
                 for r in range(i.number_of_frequent):
                     self.env['project.projection.accomplishment'].create({
                         'project_id': self._context.get('active_id'),
@@ -31,6 +47,9 @@ class SetProjection(models.TransientModel):
                     start_date = start_date + relativedelta(days=7)
             else:
                 months = 1
+                if not i.extend_projection:
+                    for line in project.projection_accomplishment_ids:
+                        line.unlink()
                 if i.survey_frequent == 'quarter': months = 4
                 for r in range(i.number_of_frequent):
                     self.env['project.projection.accomplishment'].create({
@@ -38,5 +57,3 @@ class SetProjection(models.TransientModel):
                         'date': (start_date + relativedelta(months=months)).strftime(DF)
                     })
                     start_date = start_date + relativedelta(months=months)
-            # project = self.env['project.project'].browse(self._context.get('active_id'))
-            # project.write({'projection_set': True})

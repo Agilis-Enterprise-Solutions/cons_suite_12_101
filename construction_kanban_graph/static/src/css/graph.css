@@ -31,6 +31,13 @@
 	float: right;
 	border: 1px solid #AED6F1 !important;
 }
+.centertDiv{
+	color: #000;
+	width: 100%;
+	height: 100%;
+	float: center;
+	border: 1px solid #AED6F1 !important;
+}
 .o_kanban_bar_graph{
 	height:100% !important;
 }
