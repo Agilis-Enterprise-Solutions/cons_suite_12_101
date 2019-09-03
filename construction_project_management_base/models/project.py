@@ -73,7 +73,7 @@ class Project(models.Model):
             for line in i.projection_accomplishment_ids:
                 i.projection_set = True
                 continue
-            else: i.projection_set = False
+            # else: i.projection_set = False
 
     @api.model
     def name_create(self, name):

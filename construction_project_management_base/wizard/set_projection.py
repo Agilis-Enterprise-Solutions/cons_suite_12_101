@@ -32,6 +32,7 @@ class SetProjection(models.TransientModel):
     @api.multi
     def set_projection(self):
         for i in self:
+            if not i.survey_frequent:  raise ValidationError(_('Please set first "Review Cycle" in order to proceed.'))
             project = self.env['project.project'].browse(self._context.get('active_id'))
             start_date = i.start_date#datetime.strptime(i.start_date, DF)
             data_record = []
