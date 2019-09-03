@@ -54,6 +54,7 @@
         <header position="inside">
           <button name="set_inprogress" string="Start Project" class="oe_highlight" states="draft,halted" type="object"/>
           <button name="set_close" string="Close" class="oe_highlight" states="inprogress" type="object"/>
+	  <button name="reset_to_draft" string="Reset to Draft" states="canceled" type="object"/>
           <button name="set_cancel" string="Cancel" states="halted" type="object"/>
           <button name="set_halt" string="Halt" states="inprogress" type="object"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,closed" statusbar_colors="{'KEY_IS_STATE':'VALUE_IS_COLOR'}"/>
