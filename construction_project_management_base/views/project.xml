@@ -216,7 +216,7 @@
                 </div>
                 <separator string="Projected and Actual Accomplishment" colspan="2"/>
                 <field name="projection_set" invisible="1"/>
-                <field name="projection_accomplishment_ids" nolabel="1" colspan="2" attrs="{'readonly': [('projection_set', '=', True)]}">
+                <field name="projection_accomplishment_ids" nolabel="1" colspan="2">
                   <tree string="Projected and Actual Accomplishment" editable="top" create="false" delete="false">
                     <field name="date"/>
                     <field name="projected"/>
