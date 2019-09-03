@@ -193,6 +193,12 @@ class Project(models.Model):
         return True
 
     @api.multi
+    def reset_to_draft(self):
+        for i in self:
+            i.write({'state': 'draft'})
+        return True
+
+    @api.multi
     def set_halt(self):
         for i in self:
             i.write({'state': 'halted'})
