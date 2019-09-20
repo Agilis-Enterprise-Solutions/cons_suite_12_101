@@ -8,6 +8,7 @@
 				<form string="Used Quantity">
 					<group>
 						<field name="product_id" nolabel="1"></field>
+						<field name="material_id" invisible="1"></field>
 					</group>
 					<group colspan="2">
 						<field name="quantity"></field>

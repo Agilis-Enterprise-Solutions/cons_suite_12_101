@@ -258,7 +258,7 @@ class SkitMaterialReqNonBOM(models.Model):
 
     name = fields.Char(string='Reference Number', index=True, readonly=True, copy=False, default=lambda self: _('New'))
     required_date = fields.Date("Required Date", required=True)
-    date = fields.Datetime("Date", required=True, index=True, copy=False,
+    date = fields.Date("Date", required=True, index=True, copy=False,
                            default=fields.Date.context_today)
     state = fields.Selection([('draft', 'Draft'),
                               ('confirmed', 'Confirmed'),
