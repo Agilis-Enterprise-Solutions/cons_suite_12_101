@@ -10,6 +10,8 @@ from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
 
+
+
 class SetProjection(models.TransientModel):
     _name = 'set.projection'
 

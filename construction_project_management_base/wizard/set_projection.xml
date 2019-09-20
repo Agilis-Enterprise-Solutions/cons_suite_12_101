@@ -2,6 +2,7 @@
 <odoo>
 	<data>
 
+
     <record id="set_projection_view_form" model="ir.ui.view">
       <field name="name">set.projection.form</field>
       <field name="model">set.projection</field>

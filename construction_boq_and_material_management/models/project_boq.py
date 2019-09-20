@@ -301,7 +301,9 @@ class SkitMaterial(models.Model):
     @api.onchange('product_id')
     def onchange_material_product(self):
         uom_id = self.product_id.uom_id.id
-        self.update({'uom_id': uom_id})
+        unit_rate = self.product_id.standard_price
+        self.update({'uom_id': uom_id,
+                     'unit_rate': unit_rate})
 
 
 class SkitEquipment(models.Model):

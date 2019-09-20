@@ -1,7 +1,7 @@
 .o_has_icon{
-	width: 40% !important;
+	width: 100% !important;
 	/* height: 400px !important; */
-}
+} 
 
 .os_graph{
 	border: 1px solid #AED6F1 !important;
@@ -13,7 +13,7 @@
 .outerDiv{
 	color: #fff;
 	width: 100%;
-	height: 25vh;
+	height: 40vh;
 	margin: 0px auto;
 }
 
@@ -30,7 +30,7 @@
 	height: 100%;
 	float: right;
 	border: 1px solid #AED6F1 !important;
-}
+}	
 .o_kanban_bar_graph{
 	height:100% !important;
 }
