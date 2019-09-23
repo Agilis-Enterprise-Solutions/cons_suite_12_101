@@ -166,8 +166,9 @@ class ProjectProgressBilling(models.Model):
                     accomplishment = inspection.search([('date', '<=', i.cycle_date), ('task_id', '=', task.id)], order="date desc",limit=1)
                     if accomplishment[:1]:
                         phase_accomplishment += (task.task_weight / total_task_weight) * accomplishment.actual_accomplishment
-                phase_accomplishment = (phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
                 project_phase_accomplishment = (phase.phase_weight / total_phase_weight) * phase_accomplishment
+
+                billa_accomplishment = (project_phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
                 if billable_accomplishment > 0.0:
                     billable.append([0, 0, {
                         'phase_id': phase.id,
