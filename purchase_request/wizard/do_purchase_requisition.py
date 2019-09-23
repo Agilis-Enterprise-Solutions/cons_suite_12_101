@@ -76,7 +76,7 @@ class DoPurchaseRequisition(models.TransientModel):
             for i in self.line_ids:
                 found = False
                 for line in self.purchase_requisition_ids.line_ids:
-                    if i.product_id.id == line.product_id.id:
+                    if i.product_id.id == line.product_id.id and i.product_uom_id.id == line.product_uom_id.id:
                         line.write({'product_qty': i.product_qty + line.product_qty})
                         self.purchase_requisition_ids.write({
                             'purchase_request_merge_ids': [(4, self.purchase_request_id.id)]
@@ -89,6 +89,7 @@ class DoPurchaseRequisition(models.TransientModel):
                         'line_ids': [(0, 0, {
                             'product_id': i.product_id.id,
                             'product_qty': i.product_qty,
+                            'product_uom_id': i.product_uom_id.id,
                             'schedule_date': i.date_required,
                             'product_uom_id': i.product_uom_id.id})]
                     })
