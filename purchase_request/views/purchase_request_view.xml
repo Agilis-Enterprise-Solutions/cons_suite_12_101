@@ -12,7 +12,7 @@
             <button name="button_leader_approved" string="Leader Approve" type="object" class="oe_highlight" groups="base.group_user" attrs="{'invisible': [('can_leader_approved', '=', False)]}"/>
             <button name="button_manager_approved" states="leader_approved" string="Manager Approve" type="object" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
             <button string="Create Purchase Order" name="make_purchase_quotation" type="object" context="{'default_product_ids': line_ids}" groups="purchase_request.group_purchase_request_manager" attrs="{'invisible': ['|','|',('state', 'not in', ['manager_approved']), ('purchase_order_id', 'not in', [False]), ('purchase_requisition_id', 'not in', [False])]}"/>
-            <button string="Create Purchase Requisition" name="%(action_do_purchase_requisition)d" type="action" groups="purchase_request.group_purchase_request_manager" attrs="{'invisible': ['|','|',('state', 'not in', ['manager_approved']), ('purchase_order_id', 'not in', [False]), ('purchase_requisition_id', 'not in', [False])]}"/>
+            <button string="Create Purchase Agreement" name="%(action_do_purchase_requisition)d" type="action" groups="purchase_request.group_purchase_request_manager" attrs="{'invisible': ['|','|',('state', 'not in', ['manager_approved']), ('purchase_order_id', 'not in', [False]), ('purchase_requisition_id', 'not in', [False])]}"/>
             <button name="button_done" states="manager_approved" string="Done" type="object" class="oe_highlight" groups="purchase_request.group_purchase_request_manager"/>
             <button name="button_rejected" string="Reject" type="object" attrs="{'invisible': [('can_reject', '=', False)]}"/>
             <button name="button_draft" states="to_approve,leader_approved,rejected" string="Reset" type="object" groups="purchase_request.group_purchase_request_manager"/>
@@ -52,7 +52,7 @@
                     <field name="product_id"/>
                     <field name="name"/>
                     <field name="product_qty"/>
-                    <field name="product_uom_id" groups="product.group_uom"/>
+                    <field name="product_uom_id" groups="uom.group_uom"/>
                     <field name="date_required"/>
                     <field name="cancelled" invisible="1"/>
                     <field name="is_editable" invisible="1"/>

@@ -20,7 +20,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="project_waste_process_form" model="ir.ui.view">
 			<field name="name">wizard.waste.process.form</field>
 			<field name="model">wizard.waste.process</field>
@@ -35,7 +35,7 @@
 					</group>
 						<div>
 							<label for="cutted_portion" string="Cutted Portion" attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline"/>
-							<field name="cutted_portion" attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline oe_input_margin"></field> <span attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline"> of </span> 
+							<field name="cutted_portion" attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline oe_input_margin"></field> <span attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline"> of </span>
 							<field name="cutted_qty" attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline"></field>
 							<field name="uom_id" attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline"></field>
 							<label for="waste_percent" string="Waste Percentage" attrs="{'invisible': [('material_waste', '=', 'whole')]}" class="oe_inline"/>
@@ -52,7 +52,7 @@
 				</form>
 			</field>
 		</record>
-		
+
 		<record id="project_scrap_move_form" model="ir.ui.view">
 			<field name="name">wizard.scrap.move.form</field>
 			<field name="model">wizard.scrap.move</field>
@@ -62,7 +62,7 @@
 						<field name="product_id"></field>
 						<field name="quantity"></field>
 						<field name="uom_id"></field>
-						<field name="scrap_percent" widget="progressbar"></field>
+						<!-- <field name="scrap_percent" widget="progressbar"></field> -->
 						<field name="scrap_location_id"></field>
 						<field name="description"></field>
 					</group>
