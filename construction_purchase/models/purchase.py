@@ -155,7 +155,7 @@ class PurchaseOrder(models.Model):
             # raise ValidationError(_('total: %s\n\n\n%s'%(sum(x.price_unit for x in task_po_line), str(rec[2].get('task_id')))))
             if rec[2].get('current_po_amount') > rec[2].get('budget_balance'):
                 rec[2]['budget_deferences'] = True
-                msg += "%s %s Budget Balance %s and is not sufficient to purchase worth %d. Please for a budget adjustment.\n"%(rec[2].get('name'), rec[2].get('project_boq_category'), rec[2].get('budget_balance'), rec[2].get('current_po_amount'))
+                msg += "%s %s Budget Balance %s and is not sufficient to purchase worth %d. Please request for a budget adjustment.\n"%(rec[2].get('name'), (rec[2].get('project_boq_category')).title() , rec[2].get('budget_balance'), rec[2].get('current_po_amount'))
 
             elif (rec[2].get('current_po_amount') + rec[2].get('previous_po')) > rec[2].get('category_budget'):
                 rec[2]['budget_deferences'] = True
