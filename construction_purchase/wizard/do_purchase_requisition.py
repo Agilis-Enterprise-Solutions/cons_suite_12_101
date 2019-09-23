@@ -13,7 +13,7 @@ class DoPurchaseRequisition(models.TransientModel):
 
 
     analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account")
-    purchase_requisition_ids = fields.Many2one('purchase.requisition', string="Purchase Requition", domain="[('state', 'in', ['draft']), ('account_analytic_id', 'in', [analytic_account_id]), ('purchase_request_id', 'not in', [purchase_request_id])]")
+    purchase_requisition_ids = fields.Many2one('purchase.requisition', string="Purchase Requition", domain="[('state', 'in', ['draft']), ('analytic_account_id', 'in', [analytic_account_id]), ('purchase_request_id', 'not in', [purchase_request_id])]")
 
     @api.multi
     def create_purchase_requisition(self):

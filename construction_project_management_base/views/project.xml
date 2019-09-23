@@ -249,12 +249,12 @@
         </field>
         <div class="o_project_kanban_boxes" position="inside">
           <t t-if="record.project_type.raw_value == 'project'">
-            <a class="o_project_kanban_box" name="%(open_view_project_phase_link)d" type="action">
+            <a class="o_project_kanban_box" name="%(open_view_project_phase_link)d" context="{'default_project_id': active_id, 'default_user_id': user_id}" type="action">
               <div>
                 <span class="o_value"><t t-esc="record.phase_count.raw_value"/></span>
                 <span class="o_label"><string>Phases</string></span>
-                <button t-if="record.phase_count.raw_value" name="%(open_view_project_phase_link)d" class="btn-link"
-                  context="{'default_project_id': active_id, 'default_user_id': user_id}" type="action"/>
+                <!-- <button t-if="record.phase_count.raw_value" name="%(open_view_project_phase_link)d" class="btn-link"
+                  context="{'default_project_id': active_id, 'default_user_id': user_id}" type="action"/> -->
               </div>
             </a>
           </t>
