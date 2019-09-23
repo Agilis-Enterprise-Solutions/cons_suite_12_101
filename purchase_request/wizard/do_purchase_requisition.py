@@ -53,6 +53,7 @@ class DoPurchaseRequisition(models.TransientModel):
                 product_line.append([0, 0, {
                     'product_id': i.product_id.id,
                     'product_qty': i.product_qty,
+                    'product_uom_id': i.product_uom_id.id,
                     'schedule_date': i.date_required,
                 }])
             return {
