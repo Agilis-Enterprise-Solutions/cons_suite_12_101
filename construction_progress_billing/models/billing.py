@@ -168,12 +168,12 @@ class ProjectProgressBilling(models.Model):
                         phase_accomplishment += (task.task_weight / total_task_weight) * accomplishment.actual_accomplishment
                 project_phase_accomplishment = (phase.phase_weight / total_phase_weight) * phase_accomplishment
 
-                billa_accomplishment = (project_phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
+                billable_accomplishment = (project_phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
                 if billable_accomplishment > 0.0:
                     billable.append([0, 0, {
                         'phase_id': phase.id,
                         'phase_status': phase_accomplishment,
-                        'accomplishment': project_phase_accomplishment,
+                        'accomplishment': billable_accomplishment,
                     }])
             i.write({'billing_accomplishment_ids': billable})
         return True
