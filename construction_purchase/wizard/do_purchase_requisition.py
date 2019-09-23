@@ -34,6 +34,7 @@ class DoPurchaseRequisition(models.TransientModel):
                 product_line.append([0, 0, {
                     'product_id': i.product_id.id,
                     'product_qty': i.product_qty,
+                    'product_uom_id': i.product_uom_id.id,
                     'schedule_date': i.date_required,
                     'project_id': self.purchase_request_id.project_id and self.purchase_request_id.project_id.id or False,
                     'phase_id': self.purchase_request_id.phase_id and self.purchase_request_id.phase_id.id or False,
@@ -64,7 +65,7 @@ class DoPurchaseRequisition(models.TransientModel):
                 found = False
                 for line in self.purchase_requisition_ids.line_ids:
                     if project_related:
-                        if i.product_id.id == line.product_id.id and line.project_id.id == self.purchase_request_id.project_id.id and line.phase_id.id == self.purchase_request_id.phase_id.id and line.task_id.id == self.purchase_request_id.task_id.id:
+                        if i.product_id.id == line.product_id.id and i.product_uom_id.id == line.product_uom_id.id and line.project_id.id == self.purchase_request_id.project_id.id and line.phase_id.id == self.purchase_request_id.phase_id.id and line.task_id.id == self.purchase_request_id.task_id.id:
                             found = True
                             line.write({'product_qty': i.product_qty + line.product_qty})
                             continue
@@ -79,6 +80,7 @@ class DoPurchaseRequisition(models.TransientModel):
                         'line_ids': [(0, 0, {
                             'product_id': i.product_id.id,
                             'product_qty': i.product_qty,
+                            'product_uom_id': i.product_uom_id.id,
                             'schedule_date': i.date_required,
                             'product_uom_id': i.product_uom_id.id,
                             'project_id': self.purchase_request_id.project_id and self.purchase_request_id.project_id.id or False,
