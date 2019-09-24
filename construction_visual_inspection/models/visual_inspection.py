@@ -21,24 +21,19 @@ class ProjectVisualInspection(models.Model):
     task_id = fields.Many2one('project.task', 'Task')
 
     # @api.multi
-    # @api.onchange('date', 'task_id')
-    # def _check_unique_date(self):
-    #     if not self.date:
-    #         return
-    #     rest_of_vals = self.task_id.visual_inspection - self
-    #     for record in rest_of_vals:
-    #         previous_date = record.date
-    #         current_date = record.date
-    #         p_date = self.trunc_datetime((previous_date))
-    #         c_date = self.trunc_datetime((current_date))
-    #         if p_date == c_date and record.task_id.id == self.task_id.id:
-    #             return {
-    #                  'warning': {'title': 'Error!', 'message': 'Actual Accomplishment should not be more than one time for same period.'},
-    #                  'value': {
-    #                              'date': None,
-    #                         }
-    #             }
-    #
+    @api.onchange('date', 'task_id')
+    def _check_date(self):
+        if not self.date or not self.task_id:
+            return
+        data = self.env['project.projection.accomplishment'].search([('project_id', '=', self.task_id.project_id.id)], limit=1, order='date asc')
+        if self.date < data.date:
+            return {
+                 'warning': {'title': 'Error!', 'message': 'Evaluation should start at %s.'%(data.date)},
+                 'value': {
+                             'date': None,
+                        }
+            }
+
     # def trunc_datetime(self, date):
     #     return date.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
 
