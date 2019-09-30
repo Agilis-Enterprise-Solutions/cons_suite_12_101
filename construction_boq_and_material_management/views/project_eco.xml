@@ -19,8 +19,6 @@
 				    <field name="phase_id"/>
 				    <field name="task_id"/>
 				    <field name="request_date"/>
-				    <field name="labor_cost"/>
-				    <field name="markup_cost"/>
 				</tree>
 			</field>
 		</record>
@@ -35,7 +33,7 @@
 				       			type="object" attrs="{'invisible': [('state', 'not in', ['draft'])]}"/>
 				        <button name ="eco_action_verify" string="Verify" class="oe_highlight" states="confirmed" type="object"/>
 				        <button name="eco_action_approve" string="Approve" class="oe_highlight" states="verified" type="object"/>
-				        <button name ="eco_action_cancel" states="draft,confirmed,verified,approved" string="Cancel"  type="object"/>
+				        <button name ="eco_action_cancel" states="draft,confirmed,verified" string="Cancel"  type="object"/>
 				        <button name="eco_action_draft" states="cancelled" type="object" string="Set to ECO"/>
 				        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,verified,approved"
 				           	statusbar_colors="{'KEY_IS_STATE':'VALUE_IS_COLOR'}"/>
@@ -70,7 +68,7 @@
 											<strong class="text-center">New Budget</strong>
 										</td>
 									</tr>
-									<tr invisible="1">
+									<!-- <tr>
 										<td class="info">
 											<strong class="text-center">
 												<em>
@@ -87,7 +85,7 @@
 										<td class="active text-right">
 											<field name="labor_budget" nolabel="1" />
 										</td>
-									</tr>
+									</tr> -->
 									<tr>
 										<td class="info">
 											<strong class="text-center">
@@ -243,7 +241,7 @@
 			            		</group>
 			            	</page>
 			            	<page string="Overheads">
-			            		<group string ="Labor" invisible="1">
+			            		<!-- <group string ="Labor">
 				            		<field name="eco_labor_ids" nolabel="1" context="{'default_boq_id':boq_id}" widget="one2many_list" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('approved','cancelled'))]}">
 					            		<tree string="Labor" editable="bottom">
 					            			<field name="eco_mode" required="1" />
@@ -260,8 +258,8 @@
 							            	<field name="total"/>
 					            		</tree>
 				            		</field>
-			            		</group>
-			            		<group string ="Overheads">
+			            		</group> -->
+			            		<group>
 				            		<field name="eco_overhead_ids" nolabel="1" context="{'default_boq_id':boq_id}" widget="one2many_list" mode="tree,kanban" attrs="{'readonly': [('state', 'in', ('approved','cancelled'))]}">
 					            		<tree string="Labor" editable="bottom">
 					            			<field name="eco_mode" required="1" />

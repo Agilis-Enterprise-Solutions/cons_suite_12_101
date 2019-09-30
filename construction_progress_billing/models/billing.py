@@ -14,7 +14,9 @@ class ProjectAccomplishmentBilling(models.Model):
 
     billing_id = fields.Many2one('project.progress.billing', string="Billing")
     phase_id = fields.Many2one('project.phase', string="Phase/Division")
-    accomplishment = fields.Float(string="Accomplishment (%)")
+    phase_weight = fields.Float(string="Phase Weight", store=True, related='phase_id.phase_weight')
+    phase_status = fields.Float(string="Status")
+    accomplishment = fields.Float(string="Billable(%)")
     cycle_date = fields.Date(string="Billing Cycle Date", store=True, compute='_get_billing_details')
 
     billing_state = fields.Selection([
@@ -153,6 +155,8 @@ class ProjectProgressBilling(models.Model):
             billable = []
             for line in i.billing_accomplishment_ids:
                 line.unlink()
+            total_phase_weight = sum(rec.phase_weight for rec in i.project_id.phase_ids)
+
             for phase in i.project_id.phase_ids:
                 previous_accomplishement = self.env['project.accomplishment.billing'].search([('cycle_date', '<=', i.cycle_date), ('phase_id', '=', phase.id), ('billing_state', 'not in', ['draft'])])#, order="cycle_date desc", limit=1)
                 total_task_weight = sum(rec.task_weight for rec in phase.task_ids)
@@ -162,11 +166,14 @@ class ProjectProgressBilling(models.Model):
                     accomplishment = inspection.search([('date', '<=', i.cycle_date), ('task_id', '=', task.id)], order="date desc",limit=1)
                     if accomplishment[:1]:
                         phase_accomplishment += (task.task_weight / total_task_weight) * accomplishment.actual_accomplishment
-                billable_accomplishment = (phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
+                project_phase_accomplishment = (phase.phase_weight / total_phase_weight) * phase_accomplishment
+
+                billable_accomplishment = (project_phase_accomplishment - sum([line.accomplishment for line in previous_accomplishement]))
                 if billable_accomplishment > 0.0:
                     billable.append([0, 0, {
                         'phase_id': phase.id,
-                        'accomplishment':  billable_accomplishment,
+                        'phase_status': phase_accomplishment,
+                        'accomplishment': billable_accomplishment,
                     }])
             i.write({'billing_accomplishment_ids': billable})
         return True

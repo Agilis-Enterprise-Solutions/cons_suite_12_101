@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from odoo import fields, models, api, _
+from odoo.exceptions import UserError
 
 
 class ProjectUsedQuantity(models.Model):
@@ -11,6 +12,14 @@ class ProjectUsedQuantity(models.Model):
     quantity = fields.Float(string='Quantity')
     material_id = fields.Many2one('project.material.consumption',
                                   string="Material")
+
+    @api.constrains('quantity')
+    def _onchange_used_qty(self):
+        qty = self.quantity
+        available_stock = self.material_id.available_stock
+        if(qty > available_stock):
+            raise UserError(_('Used Quantity​ can not be greater than the ​Available Stock .'))
+
 
     @api.multi
     def update_used_qty(self):
@@ -96,6 +105,14 @@ class ProjectWasteProcess(models.Model):
         for val in self:
             val.update({'waste_percent': val.quantity})
 
+    @api.constrains('quantity')
+    def _onchange_wastage_qty(self):
+        qty = self.quantity
+        available_stock = self.material_id.available_stock
+        if(qty > available_stock):
+            if (self.material_waste == 'whole'):
+                raise UserError(_('Wastage Quantity​ can not be greater than the ​Available Stock .'))
+
     @api.multi
     def update_waste_process(self):
         uom = self.env.context['uom_id']
@@ -163,6 +180,13 @@ class ProjectScrapMove(models.Model):
     def _update_scrap_percent(self):
         for val in self:
             val.update({'scrap_percent': val.quantity})
+
+    @api.constrains('quantity')
+    def _onchange_scrap_qty(self):
+        qty = self.quantity
+        available_stock = self.material_id.available_stock
+        if(qty > available_stock):
+            raise UserError(_('Scrap Quantity​ can not be greater than the ​Available Stock .'))
 
     @api.multi
     def update_scrap_move(self):

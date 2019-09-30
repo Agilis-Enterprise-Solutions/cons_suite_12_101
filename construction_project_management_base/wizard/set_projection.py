@@ -10,6 +10,8 @@ from dateutil.relativedelta import relativedelta
 from odoo.exceptions import UserError, ValidationError
 
 
+
+
 class SetProjection(models.TransientModel):
     _name = 'set.projection'
 
@@ -40,10 +42,10 @@ class SetProjection(models.TransientModel):
                 if not i.extend_projection:
                     for line in project.projection_accomplishment_ids:
                         line.unlink()
-                for r in range(i.number_of_frequent):
+                for r in range(i.number_of_frequent + 1):
                     self.env['project.projection.accomplishment'].create({
                         'project_id': self._context.get('active_id'),
-                        'date': (start_date + relativedelta(days=7)).strftime(DF)
+                        'date': start_date
                     })
                     start_date = start_date + relativedelta(days=7)
             else:
@@ -52,9 +54,9 @@ class SetProjection(models.TransientModel):
                     for line in project.projection_accomplishment_ids:
                         line.unlink()
                 if i.survey_frequent == 'quarter': months = 4
-                for r in range(i.number_of_frequent):
+                for r in range(i.number_of_frequent + 1):
                     self.env['project.projection.accomplishment'].create({
                         'project_id': self._context.get('active_id'),
-                        'date': (start_date + relativedelta(months=months)).strftime(DF)
+                        'date': start_date
                     })
                     start_date = start_date + relativedelta(months=months)
