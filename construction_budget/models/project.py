@@ -123,7 +123,11 @@ class Project(models.Model):
             labor_expense = 0.0
             equipment_expense = 0.0
             overhead_expense = 0.0
-            for line in i.env['account.analytic.line'].search([('account_id', 'child_of', i.analytic_account_id.id), ('amount', '<=', 0.0)]):
+            analytic_account = [i.analytic_account_id.id]
+            if i.analytic_account_id.group_id:
+                analytic_group = i.env['account.analytic.group'].search([('id', 'child_of', i.analytic_account_id.group_id.id)])
+                analytic_account = i.env['account.analytic.account'].search([('group_id', 'in', analytic_group)]).ids
+            for line in i.env['account.analytic.line'].search([('account_id', 'in', analytic_account), ('amount', '<=', 0.0)]):
                 if line.project_boq_category in ['meterial'] and line.amount <= 0.0:
                     material_expense += abs(line.amount)
                 elif line.project_boq_category in ['subcon'] and line.amount <= 0.0:
