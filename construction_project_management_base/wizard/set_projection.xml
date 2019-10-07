@@ -2,13 +2,14 @@
 <odoo>
 	<data>
 
+
     <record id="set_projection_view_form" model="ir.ui.view">
       <field name="name">set.projection.form</field>
       <field name="model">set.projection</field>
       <field name="arch" type="xml">
         <form string="Set Projection Timeline">
           <group>
-            <field name="survey_frequent" widget="radio" options="{'horizontal': true}" required="1" invisible="1"/>
+            <field name="survey_frequent" widget="radio" invisible="1" options="{'horizontal': true}" required="1"/>
             <field name="number_of_frequent" required="1"/>
             <field name="start_date" required="1"/>
           </group>

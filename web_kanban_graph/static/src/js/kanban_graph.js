@@ -59,7 +59,7 @@ var KanbanGraphWidget = AbstractField.extend({
         }
         var chart = nv.models.multiBarChart()
             .color(['#0039e6', '#ff3333', '#FA8072']);
-                
+
         chart.options({
           margin: {left: 83, bottom: 50, top: 10, right: 0},
           delay: 100,
@@ -73,7 +73,7 @@ var KanbanGraphWidget = AbstractField.extend({
           rotateLabels: -20,
           showControls: false
         });
-        chart.yAxis.tickFormat(d3.format('.2f')); 
+        chart.yAxis.tickFormat(d3.format('.2f'));
         d3.select(self.svg)
                 .datum(data)
                 .call(chart);
@@ -110,10 +110,10 @@ var KanbanLineGraphWidget = AbstractField.extend({
     },
     line: function (data) {
         var self = this;
-        nv.addGraph(function () {       	
+        nv.addGraph(function () {
         	var line_data = [];
             var data_dict = {};
-            var tick = 0;
+            var tick = -1;
             var tickLabels = [];
             var serie, tickLabel;
             var identity = function (p) {return p;};
@@ -140,10 +140,10 @@ var KanbanLineGraphWidget = AbstractField.extend({
             }
             tickFormat = function (d) {return tickLabels[d];};
             data = line_data;
-                   	
+
             var chart = nv.models.lineChart()
             .color(['#0039e6', '#ff3333', '#FA8072']);
-        
+
             chart.options({
 	          margin: {left: 60, bottom: 50, top: 10, right: 0},
 	          useInteractiveGuideline: true,
@@ -151,12 +151,12 @@ var KanbanLineGraphWidget = AbstractField.extend({
 	          showXAxis: true,
 	          showYAxis: true
 	        });
-            
+
             chart.xAxis.tickValues(tickValues)
             .tickFormat(tickFormat)
             .rotateLabels(-20);
             chart.yAxis.tickFormat(d3.format('.2%'));
-        
+
             d3.select(self.svg)
                 .datum(data)
                 .call(chart);

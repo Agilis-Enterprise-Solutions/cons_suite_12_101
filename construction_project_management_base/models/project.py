@@ -27,7 +27,7 @@ class Project(models.Model):
             project.phase_count = result.get(project.id, 0)
 
     project_type = fields.Selection([('project', 'Project'),
-                                     ('porfolio', 'Porfolio')], string="Project Type", default='project')
+                                     ('porfolio', 'Porfolio')], string="Project Type", default='project', required=True)
     phase_ids = fields.One2many('project.phase', 'project_id', string="Project Phases", readonly=True, states={'draft': [('readonly', False)]})
     phase_count = fields.Integer(compute='_compute_phase_count', string="Phases")
     start_date = fields.Date('Start Date')
@@ -94,8 +94,8 @@ class Project(models.Model):
             })
             values['analytic_account_id'] = analytic_account.id
         res = super(Project, self).create(values)
-        if not res.project_type in ['portfolio', False]:
-            res.analytic_account_id.write({'parent_id':res.parent_id and res.parent_id.analytic_account_id.id or False})
+        # if not res.project_type in ['portfolio', False]:
+        #     res.analytic_account_id.write({'parent_id':res.parent_id and res.parent_id.analytic_account_id.id or False})
         return res
 
     @api.multi
@@ -103,7 +103,7 @@ class Project(models.Model):
         for project in self:
             if not project.analytic_account_id and not values.get('analytic_account_id'):
                 project._create_analytic_account()
-            project.analytic_account_id.write({'parent_id': project.parent_id and project.parent_id.analytic_account_id.id or False})
+            # project.analytic_account_id.write({'parent_id': project.parent_id and project.parent_id.analytic_account_id.id or False})
         result = super(Project, self).write(values)
         return result
 
@@ -142,7 +142,10 @@ class Project(models.Model):
 
     def _compute_project_count(self):
         for record in self:
-            record.project_count = self.env['project.project'].search_count([('project_type','=','project'),('parent_id','=',record.id)])
+            record.project_count = self.env['project.project'].search_count([
+                                        ('project_type','=','project'),
+                                        ('parent_id','=',record.id)
+                                    ])
 
 
 
@@ -190,6 +193,12 @@ class Project(models.Model):
     def set_cancel(self):
         for i in self:
             i.write({'state': 'canceled'})
+        return True
+
+    @api.multi
+    def reset_to_draft(self):
+        for i in self:
+            i.write({'state': 'draft'})
         return True
 
     @api.multi

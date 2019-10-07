@@ -7,6 +7,8 @@ from odoo import api, fields, models, tools, SUPERUSER_ID, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.tools import DEFAULT_SERVER_DATETIME_FORMAT as DF
 from datetime import datetime
+import logging
+_logger = logging.getLogger("_name_")
 
 
 class PurchaseOrder(models.Model):
@@ -20,6 +22,14 @@ class PurchaseOrder(models.Model):
 
     project_related = fields.Boolean(string="A Project Related?", default=True, states=READONLY_STATES)
     purchase_request_merge_ids = fields.Many2many('sprogroup.purchase.request', 'requests_request_po_rel', 'f1', 'f2', string="Purchase Request Merged")
+
+    @api.model
+    def default_get(self, fields):
+        res = super(PurchaseOrder, self).default_get(fields)
+        try:
+            res['project_related'] = self.env[self._context.get('active_model')].browse(self._context.get('active_id')).project_related
+        except: pass
+        return res
 
     @api.multi
     def action_view_invoice(self):
@@ -145,7 +155,7 @@ class PurchaseOrder(models.Model):
             # raise ValidationError(_('total: %s\n\n\n%s'%(sum(x.price_unit for x in task_po_line), str(rec[2].get('task_id')))))
             if rec[2].get('current_po_amount') > rec[2].get('budget_balance'):
                 rec[2]['budget_deferences'] = True
-                msg += "%s %s Budget Balance %s and is not sufficient to purchase worth %d. Please for a budget adjustment.\n"%(rec[2].get('name'), rec[2].get('project_boq_category'), rec[2].get('budget_balance'), rec[2].get('current_po_amount'))
+                msg += "%s %s Budget Balance %s and is not sufficient to purchase worth %d. Please request for a budget adjustment.\n"%(rec[2].get('name'), (rec[2].get('project_boq_category')).title() , rec[2].get('budget_balance'), rec[2].get('current_po_amount'))
 
             elif (rec[2].get('current_po_amount') + rec[2].get('previous_po')) > rec[2].get('category_budget'):
                 rec[2]['budget_deferences'] = True
@@ -158,8 +168,16 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
+    @api.depends('account_analytic_id')
+    def _get_project_value(self):
+        for i in self:
+            project = i.env['project.project'].search([('analytic_account_id','=', i.account_analytic_id.id)], limit=1)
+            if project[:1]:
+                i.project_id = project.id
+
+    project_id = fields.Many2one('project.project', string="Project", store=True, compute="_get_project_value")
     phase_id = fields.Many2one('project.phase', string="Phase", domain="[('project_id.analytic_account_id', '=', account_analytic_id)]")
-    task_id = fields.Many2one('project.task', string="Task", domain="[('phase_id', '=', phase_id)]")
+    task_id = fields.Many2one('project.task', string="Task")
     project_boq_category = fields.Selection([
             ('meterial', 'Material'),
             ('subcon', 'Subcontractor'),
@@ -177,6 +195,19 @@ class PurchaseOrderLine(models.Model):
             ('cancel', 'Cancelled')
         ], string='Status', store=True, compute='_get_po_status')
 
+    @api.onchange("project_id", "phase_id")
+    def _onchange_project(self):
+        vals = {}
+        if self.project_id.project_type == 'project' and self.phase_id:
+            vals['domain'] = {
+                "task_id": [("phase_id", "=", self.phase_id.id)],
+            }
+        elif self.project_id.project_type == 'porfolio':
+            vals['domain'] = {
+                "task_id": [("project_id", "=", self.project_id.id)],
+            }
+        return vals
+
     @api.depends('date_order')
     def _get_po_date(self):
         for i in self:
@@ -187,14 +218,6 @@ class PurchaseOrderLine(models.Model):
     def _get_po_status(self):
         for i in self:
             i.state = i.order_id.state
-
-    # @api.constrains('task_id', 'project_boq_category')
-    # def _check_data(self):
-    #     for i in self:
-    #         if not i.task_id and not i.project_boq_category in [False, 'overhead']:
-    #             raise ValidationError(_('Please select related Task to those lines where "Category" in not equal to "Overheads" or Epmty'))
-
-
 
 class SprogroupPurchaseRequest(models.Model):
      _inherit = 'sprogroup.purchase.request'
@@ -209,6 +232,7 @@ class PurchaseRequisition(models.Model):
     _inherit = 'purchase.requisition'
 
     project_related = fields.Boolean(string="A Project Related?")
+    analytic_account_id = fields.Many2one('account.analytic.account', string="Analytic Account")
 
 class PurchaseRequisitionline(models.Model):
     _inherit = 'purchase.requisition.line'

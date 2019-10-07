@@ -4,7 +4,7 @@
     'author':  'Srikesh Infotech',
     'website': 'www.srikeshinfotech.com',
     'license': 'AGPL-3',
-    'version': '12.0.0',
+    'version': '11.0.0',
     'category': 'Project',
     'name': "Construction BOQ and Material Management",
     'summary': 'Construction Project Management customized module',
@@ -28,6 +28,6 @@
         ],
     'installable': True,
     'auto_install': False,
-    'application': True,
+    'application': False,
 
 }

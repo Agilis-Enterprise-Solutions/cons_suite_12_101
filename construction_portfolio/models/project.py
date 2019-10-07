@@ -10,31 +10,38 @@ from odoo.exceptions import UserError, ValidationError
 class Project(models.Model):
     _inherit = 'project.project'
 
-    parent_id = fields.Many2one("project.project", string="Portfolio", domain="[('project_type', 'in', ['porfolio'])]")
-    project_count = fields.Integer(string="Projects", compute="_compute_project_count")
-
-    @api.onchange('parent_id', 'name')
+    @api.onchange('parent_id', 'project_type')
     def _onchange_portfolio(self):
-        # data = self.search([('project_type', 'in', ['porfolio'])])
-        # raise ValidationError(_('Data: %s'%(str(data))))
-        for i in self:
-            if i.parent_id:
-                i.user_id = i.parent_id.user_id.id
-                i.partner_id = i.parent_id.partner_id.id
-
-    def _compute_project_count(self):
-        for record in self:
-            record.project_count = self.env['project.project'].search_count([('project_type','=','project'),('parent_id','=',record.id)])
+        if self.project_type == 'project' and self.parent_id:
+            self.user_id = self.parent_id.user_id and self.parent_id.user_id.id or False
+            self.partner_id = self.parent_id.partner_id and self.parent_id.partner_id.id or False
 
     @api.model
     def create(self, vals):
         res = super(Project, self).create(vals)
-        if not res.project_type in ['portfolio', False]:
-            res.analytic_account_id.write({'parent_id':res.parent_id and res.parent_id.analytic_account_id.id or False})
+        if res.project_type == 'porfolio':
+            if res.analytic_account_id:
+                res.analytic_account_id.write({
+                    'group_id': self.env['account.analytic.group'].create({'name': res.name, 'description': 'Project Portfolio'}).id
+                })
+        elif res.project_type == 'project' and res.parent_id:
+            if res.analytic_account_id and res.parent_id.analytic_account_id and res.parent_id.analytic_account_id.group_id:
+                res.analytic_account_id.write({
+                    'group_id': res.parent_id.analytic_account_id.group_id.id
+                })
         return res
 
     @api.multi
     def write(self, vals):
         res = super(Project, self).write(vals)
-        self.analytic_account_id.write({'parent_id': self.parent_id and self.parent_id.analytic_account_id.id or False})
+        if res.project_type == 'porfolio':
+            if res.analytic_account_id and not res.analytic_account_id.group_id:
+                res.analytic_account_id.write({
+                    'group_id': self.env['account.analytic.group'].create({'name': res.name, 'description': 'Project Portfolio'}).id
+                })
+        elif res.project_type == 'project' and not res.parent_id:
+            if res.analytic_account_id:
+                res.analytic_account_id.write({
+                    'group_id': False
+                })
         return res

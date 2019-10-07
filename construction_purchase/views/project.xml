@@ -22,7 +22,7 @@
       <field name="name">Purchase Order Lines</field>
       <field name="type">ir.actions.act_window</field>
       <field name="res_model">purchase.order.line</field>
-      <field name="domain">[('task_id', 'not in', [False]), ('task_id.project_id', '=', active_id)]</field>
+      <field name="domain">[('task_id', 'not in', [False]), ('project_id', 'child_of', active_id)]</field>
       <field name="view_mode">grid,tree,form,pivot,graph</field>
       <field name="context">{'search_default_confirm_po': 1}</field>
       <field name="view_id" ref="purchase_order_line_menu.purchase_order_line_tree"/>
