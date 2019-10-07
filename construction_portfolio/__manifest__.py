@@ -35,9 +35,7 @@
         ],
     'depends': [
             'project',
-            # 'web_fontawesome',
-            'project_description',
-            'project_task_default_stage',
+            'basic_construction_suite',
             'construction_project_management_base',
         ],
     'description': '''

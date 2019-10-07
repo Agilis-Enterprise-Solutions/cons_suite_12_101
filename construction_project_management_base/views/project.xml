@@ -45,24 +45,42 @@
         <field name="context">{'default_project_id': active_id}</field>
     </record>
 
+    <record id="action_open_child_project" model="ir.actions.act_window">
+        <field name="name">Projects</field>
+        <field name="res_model">project.project</field>
+        <field name="view_type">form</field>
+        <field name="domain">[
+          ('project_type','=','project'),
+          ('parent_id','=',active_id)]</field>
+        <!-- <field name="context">{
+          'default_project_type': 'project',
+          'default_partner_id': partner_id}</field> -->
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="view_id" ref="project.view_project_kanban"/>
+        <field name="search_view_id" ref="project.view_project_project_filter"/>
+        <field name="target">main</field>
+    </record>
+
     <!-- Inherit Form view -->
     <record id="project_form_view" model="ir.ui.view">
       <field name="name">project.project.form</field>
       <field name="model">project.project</field>
       <field name="inherit_id" ref="project.edit_project"/>
       <field name="arch" type="xml">
+
         <header position="inside">
           <button name="set_inprogress" string="Start Project" class="oe_highlight" states="draft,halted" type="object"/>
           <button name="set_close" string="Close" class="oe_highlight" states="inprogress" type="object"/>
-	  <button name="reset_to_draft" string="Reset to Draft" states="canceled" type="object"/>
+	        <button name="reset_to_draft" string="Reset to Draft" states="canceled" type="object"/>
           <button name="set_cancel" string="Cancel" states="halted" type="object"/>
           <button name="set_halt" string="Halt" states="inprogress" type="object"/>
           <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,closed" statusbar_colors="{'KEY_IS_STATE':'VALUE_IS_COLOR'}"/>
         </header>
         <button name="%(project.act_project_project_2_project_task_all)d" position="before">
-          <!-- <button class="oe_stat_button" name="view_projects" type="object" icon="fa-puzzle-piece">
+          <button class="oe_stat_button" name="%(action_open_child_project)d" attrs="{'invisible': [('project_type', 'not in', ['porfolio'])]}"
+            context="{'default_parent_id': active_id,'default_project_type': 'project', 'default_partner_id': partner_id}" type="action" icon="fa-puzzle-piece">
             <field string="Projects" name="project_count" widget="statinfo"/>
-          </button> -->
+          </button>
           <button class="oe_stat_button" type="action"
             name="%(open_view_project_phase_link)d" icon="fa-tasks"
             context="{'default_project_id': active_id, 'default_user_id': user_id}">
@@ -82,7 +100,7 @@
             <field name="analytic_account_id"/>
         </xpath>
         <field name="sequence" position="after">
-          <field name="project_type"/>
+          <field name="project_type" />
           <field name="boq_setting" readonly="1" groups="base.group_no_one"
             help="Project + Phase + Task + BOQ:  Whereas, the project and budget is breakdown into phases, and Phases are breakdown into several task. And each task is paired with the BOQ/BOM budget. Each task will have a unique warehouse location and stock picking identity to be able to track the movement of material on each BOQ/BOM.\n
             Project + Phase + BOQ + Task:  Whereas, the project and budget is breakdown into phases, and Phases are breakdown into several tasks (Budget breakdown will up to phase level only). And each Phase is paired with the BOQ/BOM budget. Each Phase will have a unique warehouse location and stock picking identity to be able to track the movement of material on each BOQ/BOM."/>
