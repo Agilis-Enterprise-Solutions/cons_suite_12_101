@@ -36,7 +36,7 @@
             'project',
             'stock',
             # 'web_fontawesome',
-            'account_analytic_parent'
+            # 'account_analytic_parent'
         ],
     'description': '''
 Construction Project Management''',

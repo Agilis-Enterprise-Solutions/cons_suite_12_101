@@ -13,6 +13,7 @@
         </field>
         <xpath expr="//field[@name='invoice_line_ids']/tree/field[@name='account_analytic_id']"
           position="after">
+          <field name="project_id" invisible="1"/>
           <field name="phase_id" attrs="{'column_invisible': [('parent.project_related', 'in', [False])]}"/>
           <field name="task_id" attrs="{'column_invisible': [('parent.project_related', 'in', [False])], 'required': [('phase_id', 'not in', [False])]}"/>
           <field name="project_boq_category" attrs="{'column_invisible': [('parent.project_related', 'in', [False])], 'required': [('phase_id', 'not in', [False])]}"/>

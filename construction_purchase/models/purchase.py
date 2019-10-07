@@ -168,8 +168,16 @@ class PurchaseOrder(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
+    @api.depends('account_analytic_id')
+    def _get_project_value(self):
+        for i in self:
+            project = i.env['project.project'].search([('analytic_account_id','=', i.account_analytic_id.id)], limit=1)
+            if project[:1]:
+                i.project_id = project.id
+
+    project_id = fields.Many2one('project.project', string="Project", store=True, compute="_get_project_value")
     phase_id = fields.Many2one('project.phase', string="Phase", domain="[('project_id.analytic_account_id', '=', account_analytic_id)]")
-    task_id = fields.Many2one('project.task', string="Task", domain="[('phase_id', '=', phase_id)]")
+    task_id = fields.Many2one('project.task', string="Task")
     project_boq_category = fields.Selection([
             ('meterial', 'Material'),
             ('subcon', 'Subcontractor'),
@@ -186,6 +194,19 @@ class PurchaseOrderLine(models.Model):
             ('done', 'Locked'),
             ('cancel', 'Cancelled')
         ], string='Status', store=True, compute='_get_po_status')
+
+    @api.onchange("project_id", "phase_id")
+    def _onchange_project(self):
+        vals = {}
+        if self.project_id.project_type == 'project' and self.phase_id:
+            vals['domain'] = {
+                "task_id": [("phase_id", "=", self.phase_id.id)],
+            }
+        elif self.project_id.project_type == 'porfolio':
+            vals['domain'] = {
+                "task_id": [("project_id", "=", self.project_id.id)],
+            }
+        return vals
 
     @api.depends('date_order')
     def _get_po_date(self):

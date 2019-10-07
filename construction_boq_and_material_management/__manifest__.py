@@ -28,6 +28,6 @@
         ],
     'installable': True,
     'auto_install': False,
-    'application': True,
+    'application': False,
 
 }

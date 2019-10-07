@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_housing_project_model_user,housing_project_model_user,model_housing_project_model,base.group_user,1,1,1,1
+access_housing_project_model_image_user,housing_project_model_image_user,model_housing_project_model_image,base.group_user,1,1,1,1
+access_housing_block_user,housing_block_user,model_housing_block,base.group_user,1,1,1,1
+access_housing_model_user,housing_model_user,model_housing_model,base.group_user,1,1,1,1
